@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class GamersPostDTO(BaseModel):
@@ -16,3 +16,5 @@ class GamersGetDTO(GamersPostDTO):
     """
     username: str
     password: bytes
+    status: str
+    email: EmailStr
