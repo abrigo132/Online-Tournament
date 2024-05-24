@@ -4,6 +4,7 @@ from src.auth.schemas import GamersRegister, GamersAuth
 from src.database.session import session
 from src.database.models import Gamers
 from src.auth.utils_jwt import hash_password
+from src.database.schemasDTO import GamersGetDTO
 
 
 async def insert_gamer_db(data_user: GamersRegister) -> None:
@@ -22,8 +23,8 @@ async def insert_gamer_db(data_user: GamersRegister) -> None:
 
 async def check_user(username: str) -> None:
     async with session() as session_db:
-        stmt = select(Gamers).filter_by(username=username)
+        stmt = select(Gamers).select_from(Gamers).filter_by(username=username)
         result = await session_db.execute(stmt)
-        gamer = result.scalars().first()
-    print(gamer)
-    return gamer
+        gamer = result.scalars().all()
+    result_dto = [GamersGetDTO.model_validate(row, from_attributes=True) for row in gamer]
+    return result_dto
