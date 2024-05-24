@@ -9,11 +9,12 @@ from src.database.session import session
 from src.crud.crud import check_user
 
 router = APIRouter(prefix="/login", tags=["login"])
+
+
 # bearer = OAuth2PasswordBearer(url="/login/gamers/create/accesstoken/")
 
 
 async def check_auth_user(username: str = Form(), password: str = Form()) -> tuple:
-
     """
 
     :param username:
@@ -28,7 +29,7 @@ async def check_auth_user(username: str = Form(), password: str = Form()) -> tup
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid username or password"
     )
-    data_db: GamersGetDTO = await check_user(username) # Pydantic схема списком
+    data_db: GamersGetDTO = await check_user(username)  # Pydantic схема списком
     if not data_db:
         raise exception
     if username != data_db[0].username:
