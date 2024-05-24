@@ -59,6 +59,8 @@ class Gamers(Base):
     created_at: Mapped[created]
     squad_id: Mapped[int] = mapped_column(ForeignKey("squads.id"))
 
+    repr_cols = ("status", "email", )
+
 
 class TournamentSquads(Base):
     """
