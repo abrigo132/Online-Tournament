@@ -1,7 +1,7 @@
 import datetime
 from typing import Annotated, Optional
 
-from pydantic import EmailStr
+
 from sqlalchemy import text, ForeignKey
 
 from src.database.session import Base
@@ -37,7 +37,7 @@ class Tournaments(Base):
     number_of_teams: Mapped[str] = mapped_column(nullable=False)
     type: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[created]
-    finished_at: Mapped[datetime]
+    finished_at: Mapped[str]
 
     squads_list: Mapped[list["Squads"]] = relationship(
         back_populates="tournaments_list",
