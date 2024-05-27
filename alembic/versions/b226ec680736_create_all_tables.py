@@ -1,8 +1,8 @@
-"""create_all_tables
+"""create all tables
 
-Revision ID: b226ec680736
+Revision ID: ed3b3af32df3
 Revises: 
-Create Date: 2024-05-27 13:28:46.187327
+Create Date: 2024-05-19 11:25:31.890744
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "b226ec680736"
+revision: str = "ed3b3af32df3"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -39,15 +39,19 @@ def upgrade() -> None:
         "tournaments",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("tournament_name", sa.String(), nullable=False),
-        sa.Column("number_of_teams", sa.Integer(), nullable=False),
-        sa.Column("tournament_type", sa.String(), nullable=False),
+        sa.Column("number_of_teams", sa.String(), nullable=False),
         sa.Column(
             "created_at",
             sa.DateTime(),
             server_default=sa.text("TIMEZONE('utc', now())"),
             nullable=False,
         ),
-        sa.Column("finished_at", sa.String(), nullable=False),
+        sa.Column(
+            "finished_at",
+            sa.DateTime(),
+            server_default=sa.text("TIMEZONE('utc', now())"),
+            nullable=False,
+        ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("tournament_name"),
     )
@@ -56,7 +60,7 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("username", sa.String(), nullable=False),
         sa.Column("password", sa.LargeBinary(), nullable=False),
-        sa.Column("steam_id", sa.String(), nullable=False),
+        sa.Column("steam_id", sa.Integer(), nullable=False),
         sa.Column("email", sa.String(), nullable=False),
         sa.Column("status", sa.String(), nullable=False),
         sa.Column("age", sa.Integer(), nullable=False),
@@ -66,7 +70,7 @@ def upgrade() -> None:
             server_default=sa.text("TIMEZONE('utc', now())"),
             nullable=False,
         ),
-        sa.Column("squad_id", sa.Integer(), nullable=True),
+        sa.Column("squad_id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["squad_id"],
             ["squads.id"],
