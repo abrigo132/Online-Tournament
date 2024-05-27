@@ -34,8 +34,8 @@ class Tournaments(Base):
     __tablename__ = "tournaments"
     id: Mapped[idpk]
     tournament_name: Mapped[str] = mapped_column(unique=True, nullable=False)
-    number_of_teams: Mapped[str] = mapped_column(nullable=False)
-    type: Mapped[str] = mapped_column(nullable=False)
+    number_of_teams: Mapped[int] = mapped_column(nullable=False)
+    tournament_type: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[created]
     finished_at: Mapped[str]
 
