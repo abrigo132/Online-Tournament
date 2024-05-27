@@ -37,7 +37,7 @@ class Tournaments(Base):
     number_of_teams: Mapped[str] = mapped_column(nullable=False)
     type: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[created]
-    finished_at: Mapped[created]
+    finished_at: Mapped[datetime]
 
     squads_list: Mapped[list["Squads"]] = relationship(
         back_populates="tournaments_list",
