@@ -42,7 +42,7 @@ class Tournaments(Base):
         back_populates="tournaments_list",
         secondary="tournamentssquads",
     )
-    repr_cols = ("finished_at")
+    repr_cols = ("finished_at", "created_at")
 
 
 class Gamers(Base):
