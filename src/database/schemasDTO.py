@@ -18,3 +18,14 @@ class GamersGetDTO(GamersPostDTO):
     password: bytes
     status: str
     email: EmailStr
+
+
+class TournamentsPostDTO(BaseModel):
+    id: int
+
+
+class TournamentsGetDTO(TournamentsPostDTO):
+    tournament_name: str
+    teams: int
+    tournament_type: str
+    finished_at: str
