@@ -8,3 +8,7 @@ class NewTournament(BaseModel):
     number_of_teams: int
     tournament_type: str
     finished_at: str
+
+
+class TournamentInfo(BaseModel):
+    name: str
