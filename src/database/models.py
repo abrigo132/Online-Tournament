@@ -1,7 +1,6 @@
 import datetime
 from typing import Annotated, Optional
 
-
 from sqlalchemy import text, ForeignKey
 
 from src.database.session import Base
@@ -43,6 +42,7 @@ class Tournaments(Base):
         back_populates="tournaments_list",
         secondary="tournamentssquads",
     )
+    repr_cols = ("finished_at")
 
 
 class Gamers(Base):
@@ -60,7 +60,7 @@ class Gamers(Base):
     created_at: Mapped[created]
     squad_id: Mapped[int] = mapped_column(ForeignKey("squads.id"), nullable=True)
 
-    repr_cols = ("status", "email", )
+    repr_cols = ("status", "email",)
 
 
 class TournamentSquads(Base):
