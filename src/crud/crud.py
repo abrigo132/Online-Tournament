@@ -4,7 +4,7 @@ from sqlalchemy import select
 from src.database.session import session
 from src.database.models import Gamers, Tournaments
 from src.auth.utils_jwt import hash_password
-from src.database.schemasDTO import GamersGetDTO
+from src.database.schemasDTO import GamersGetDTO, TournamentsGetDTO
 
 
 async def insert_gamer_db(username: str, password: str, steam_id: str, email: str, age: int,
@@ -57,3 +57,12 @@ async def insert_tournament_into_db(tournament_name: str,
     return {
         "status": "ok"
     }
+
+
+async def check_tournament_info(tournament_name: str) -> list:
+    async with session() as conn:
+        stmt = select(Tournaments).filter_by(id=tournament_name)
+        result = await conn.execute(stmt)
+        tournament = result.scalars().all()
+        result_dto = [TournamentsGetDTO.model_validate(row, from_attributes=True) for row in tournament]
+        return result_dto
