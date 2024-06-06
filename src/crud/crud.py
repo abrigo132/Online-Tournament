@@ -61,7 +61,7 @@ async def insert_tournament_into_db(tournament_name: str,
 
 async def check_tournament_info(tournament_name: str) -> list:
     async with session() as conn:
-        stmt = select(Tournaments).filter_by(id=tournament_name)
+        stmt = select(Tournaments).filter_by(tournament_name=tournament_name)
         result = await conn.execute(stmt)
         tournament = result.scalars().all()
         result_dto = [TournamentsGetDTO.model_validate(row, from_attributes=True) for row in tournament]
