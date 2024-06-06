@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -26,6 +28,7 @@ class TournamentsPostDTO(BaseModel):
 
 class TournamentsGetDTO(TournamentsPostDTO):
     tournament_name: str
-    teams: int
+    teams: int = None
     tournament_type: str
+    created_at: datetime
     finished_at: str
