@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
-from src.tournament_view.schemas import NewTournament
-from src.crud.crud import insert_tournament_into_db
+from src.tournament_view.schemas import NewTournament, TournamentInfo
+from src.crud.crud import insert_tournament_into_db, check_tournament_info
 
 router = APIRouter(prefix="/tournament", tags=["tournament"])
 
@@ -18,8 +18,19 @@ async def check_register_new_tournament(tournament_data: NewTournament) -> str:
     return tournament_data.tournament_name
 
 
-@router.post("/add")
-async def add_new_tournament(tournament_name: str = Depends(check_register_new_tournament)):
+@router.post("/add/")
+def add_new_tournament(tournament_name: str = Depends(check_register_new_tournament)):
     return {
         "message": f"Поздравляю, вы зарегистрировали свой турнир с названием {tournament_name}"
+    }
+
+
+async def about_tournament(tournament_data: NewTournament):
+    response_db = await check_tournament_info(tournament_data.tournament_name)
+    
+
+@router.get("/info/{tournament_name}/")
+def get_tournament_by_id(tournament_name: TournamentInfo = Depends(about_tournament)):
+    return {
+        tournament_name
     }
