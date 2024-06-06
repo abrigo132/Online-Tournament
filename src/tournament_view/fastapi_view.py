@@ -25,12 +25,17 @@ def add_new_tournament(tournament_name: str = Depends(check_register_new_tournam
     }
 
 
-async def about_tournament(tournament_data: NewTournament):
-    response_db = await check_tournament_info(tournament_data.tournament_name)
+async def about_tournament(tournament_data: TournamentInfo):
+    response_db = await check_tournament_info(tournament_data.name)
+    return response_db
     
 
-@router.get("/info/{tournament_name}/")
-def get_tournament_by_id(tournament_name: TournamentInfo = Depends(about_tournament)):
+@router.post("/info/{tournament_name}/")
+def get_tournament_by_id(tournament_info: TournamentInfo = Depends(about_tournament)):
     return {
-        tournament_name
+        "name": tournament_info[0].tournament_name,
+        "teams": tournament_info[0].teams,
+        "type": tournament_info[0].tournament_type,
+        "created_at": tournament_info[0].created_at,
+        "finished_at": tournament_info[0].finished_at
     }
