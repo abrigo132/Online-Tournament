@@ -9,6 +9,10 @@ from src.database.schemasDTO import GamersGetDTO, TournamentsGetDTO
 
 async def insert_gamer_db(username: str, password: str, steam_id: str, email: str, age: int,
                           status: str = "active") -> dict:
+    """
+    Crud for registration gamer
+
+    """
     new_gamer = Gamers(username=username,
                        password=hash_password(password),
                        steam_id=steam_id,
@@ -29,7 +33,11 @@ async def insert_gamer_db(username: str, password: str, steam_id: str, email: st
     }
 
 
-async def check_user(username: str) -> None:
+async def check_user_auth(username: str) -> None:
+    """
+    Crud for read user by username
+
+    """
     async with session() as session_db:
         stmt = select(Gamers).select_from(Gamers).filter_by(username=username)
         result = await session_db.execute(stmt)
@@ -42,6 +50,10 @@ async def insert_tournament_into_db(tournament_name: str,
                                     number_of_teams: int,
                                     tournament_type: str,
                                     finished_at: str) -> dict:
+    """
+    Crud for create tournament
+
+    """
     new_tournament = Tournaments(tournament_name=tournament_name,
                                  number_of_teams=number_of_teams,
                                  tournament_type=tournament_type,
@@ -60,9 +72,25 @@ async def insert_tournament_into_db(tournament_name: str,
 
 
 async def check_tournament_info(tournament_name: str) -> list:
+    """
+    Crud for read tournament info
+
+    """
     async with session() as conn:
         stmt = select(Tournaments).filter_by(tournament_name=tournament_name)
         result = await conn.execute(stmt)
         tournament = result.scalars().all()
         result_dto = [TournamentsGetDTO.model_validate(row, from_attributes=True) for row in tournament]
-        return result_dto
+    return result_dto
+
+
+async def check_gamer_info(gamer_name: str):
+    """
+    Crud for read gamer info
+
+    """
+    async with session() as conn:
+        stmt = select(Gamers).filter_by(username=gamer_name)
+        result = await conn.execute(stmt)
+        gamer = result.scalar_one()
+    return gamer
