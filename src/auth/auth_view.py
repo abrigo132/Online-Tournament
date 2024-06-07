@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from src.auth.schemas import GamersAuth, TokenInfo
 from src.auth.utils_jwt import check_password, encoded_jwt, decoded_jwt
 from src.database.schemasDTO import GamersGetDTO
-from src.crud.crud import check_user
+from src.crud.crud import check_user_auth
 
 router = APIRouter(prefix="/login", tags=["login"])
 
@@ -27,7 +27,7 @@ async def check_auth_user(username: str = Form(), password: str = Form()) -> tup
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid username or password"
     )
-    data_db: GamersGetDTO = await check_user(username)  # Pydantic схема списком
+    data_db: GamersGetDTO = await check_user_auth(username)  # Pydantic схема списком
     if not data_db:
         raise exception
     elif not check_password(password, data_db[0].password):
