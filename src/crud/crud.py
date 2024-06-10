@@ -7,7 +7,7 @@ from src.auth.utils_jwt import hash_password
 from src.database.schemasDTO import GamersGetDTO, TournamentsGetDTO
 
 
-async def insert_gamer_db(username: str, password: str, steam_id: str, email: str, age: int,
+async def insert_gamer_db(username: str, password: str, steam_id: str, dota2_id: str, email: str, age: int,
                           status: str = "active") -> dict:
     """
     Crud for registration gamer
@@ -16,6 +16,7 @@ async def insert_gamer_db(username: str, password: str, steam_id: str, email: st
     new_gamer = Gamers(username=username,
                        password=hash_password(password),
                        steam_id=steam_id,
+                       dota2_id=dota2_id,
                        email=email,
                        age=age,
                        status=status)
