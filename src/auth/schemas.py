@@ -11,6 +11,7 @@ class GamersRegister(BaseModel):
     email: EmailStr = ""
     password: str
     steam_id: str
+    dota2_id: str
     age: int
 
 
