@@ -8,8 +8,9 @@ router = APIRouter(prefix="/register", tags=["register"])
 
 
 async def check_register_user(username: str = Form(), password: str = Form(), steam_id: str = Form(),
+                              dota2_id: str = Form(),
                               email: str = Form(), age: int = Form(), ):
-    db_response: dict = await insert_gamer_db(username, password, steam_id, email, age)
+    db_response: dict = await insert_gamer_db(username, password, steam_id, dota2_id, email, age)
     if db_response["status"] == "bad":
         raise HTTPException(
             status_code=status.HTTP_408_REQUEST_TIMEOUT,
