@@ -54,6 +54,7 @@ class Gamers(Base):
     username: Mapped[str]
     password: Mapped[bytes] = mapped_column(unique=True)
     steam_id: Mapped[str] = mapped_column(unique=True)
+    dota2_id: Mapped[str] = mapped_column(unique=True, nullable=True)
     email: Mapped[str]
     status: Mapped[str] = mapped_column(nullable=False)
     age: Mapped[int]
