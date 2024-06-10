@@ -1,4 +1,6 @@
+import os
 from pathlib import Path
+from os import getenv
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -41,6 +43,8 @@ class Settings(BaseSettings):
     db: DbSettings = DbSettings()
 
     auth_jwt: JWTSettings = JWTSettings()
+
+
 
 
 settings = Settings()
