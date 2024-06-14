@@ -1,10 +1,5 @@
 import httpx
 
-
-from src.crud.crud import check_gamer_info
-
-
-
 """
 Подсказка по ранжированию в дота2
 Первые цифры:
@@ -32,4 +27,3 @@ async def get_info_gamer_wl(dota2_id: str) -> dict[str, str]:
         result_win_lose = await connect.get(url=url_win_lose)
         result_info_player = await connect.get(url=url_info_player)
     return result_win_lose.json(), result_info_player.json()
-
