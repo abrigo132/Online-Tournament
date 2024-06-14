@@ -1,9 +1,9 @@
 from asyncpg import ConnectionDoesNotExistError
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 
 from src.database.session import session
-from src.database.models import Gamers, Tournaments, Squads, TournamentSquads
+from src.database.models import Gamers, Tournaments, Squads
 from src.auth.utils_jwt import hash_password
 from src.database.schemasDTO import GamersGetDTO, TournamentsGetDTO
 
@@ -86,15 +86,14 @@ async def check_tournament_info(tournament_name: str) -> list:
     return result_dto
 
 
-async def check_gamer_info(gamer_name: str):
+async def check_gamer_info(gamer_name: str) -> Gamers:
     """
     Crud for read gamer info
 
     """
     async with session() as conn:
-        stmt = select(Gamers).filter_by(username=gamer_name)
-        result = await conn.execute(stmt)
-        gamer = result.scalar_one()
+        stmt = select(Gamers).filter_by(username=gamer_name).options(joinedload(Gamers.squad))
+        gamer = await conn.scalar(stmt)
     return gamer
 
 
@@ -153,7 +152,28 @@ async def info_participants_in_tournament(tournament_name: str) -> list[Tourname
 
 
 async def info_squads_with_tournaments(squad_name: str) -> list[Squads]:
-    async with session() as connect_db:
-        stmt = select(Squads).filter_by(squad_name=squad_name).options(selectinload(Squads.tournaments_list))
+    async with (session() as connect_db):
+        stmt = select(Squads).filter_by(squad_name=squad_name).options(selectinload(Squads.tournaments_list)) \
+            .options(selectinload(Squads.gamers))
         tournaments = await connect_db.scalars(stmt)
     return list(tournaments)
+
+
+async def add_gamer_into_squad(gamer_name: str, squad_name: str) -> dict[str, str]:
+    gamer = await check_gamer_info(gamer_name=gamer_name)
+    try:
+        async with session() as connect_db:
+            squad = await connect_db.scalar(select(Squads).filter_by(squad_name=squad_name).
+                                            options(selectinload(Squads.gamers)))
+            squad.gamers.append(gamer)
+
+            await connect_db.commit()
+
+    except ConnectionDoesNotExistError:
+        return {
+            "status": "bad"
+        }
+
+    return {
+        "status": "ok"
+    }
