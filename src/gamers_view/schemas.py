@@ -7,4 +7,5 @@ class GamerInfo(BaseModel):
     email: str
     age: int
     squad_id: int
+    dota2_id: str
     win_lose: dict
