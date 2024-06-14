@@ -61,7 +61,7 @@ class Gamers(Base):
     created_at: Mapped[created]
     squad_id: Mapped[int] = mapped_column(ForeignKey("squads.id"), nullable=True)
 
-    repr_cols = ("status", "email",)
+    repr_cols = ("status", "email", "dota2_id")
 
 
 class TournamentSquads(Base):
