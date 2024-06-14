@@ -6,6 +6,6 @@ class GamerInfo(BaseModel):
     steam_id: str
     email: str
     age: int
-    squad_id: int
+    squad: str
     dota2_id: str
     win_lose: dict
