@@ -1,8 +1,9 @@
 from asyncpg import ConnectionDoesNotExistError
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from src.database.session import session
-from src.database.models import Gamers, Tournaments
+from src.database.models import Gamers, Tournaments, Squads, TournamentSquads
 from src.auth.utils_jwt import hash_password
 from src.database.schemasDTO import GamersGetDTO, TournamentsGetDTO
 
@@ -95,3 +96,64 @@ async def check_gamer_info(gamer_name: str):
         result = await conn.execute(stmt)
         gamer = result.scalar_one()
     return gamer
+
+
+async def create_squad(squad_name: str, about_of_team: str):
+    new_squad = Squads(squad_name=squad_name, about_of_team=about_of_team)
+    try:
+        async with session() as data_db:
+            gamer = data_db.add(new_squad)
+            await data_db.commit()
+    except ConnectionDoesNotExistError:
+        return {
+            "status": "bad"
+        }
+
+    return {
+        "status": "ok"
+    }
+
+
+async def squad_info(squad_name: str) -> Squads:
+    async with session() as connect:
+        stmt = select(Squads).filter_by(squad_name=squad_name)
+        result = await connect.execute(stmt)
+        squad = result.scalar_one()
+    return squad
+
+
+async def register_squad_on_tournament_and_add_tournament_in_squad(squad_name: str, tournament_name: str) \
+        -> dict[str, str]:
+    squad = await squad_info(squad_name)  # type: Squads
+    try:
+        async with session() as db:
+            register_squad = await db.scalar(select(Tournaments).filter_by(tournament_name=tournament_name).options(
+                selectinload(Tournaments.squads_list))
+            )
+            register_squad.squads_list.append(squad)
+
+            await db.commit()
+    except ConnectionDoesNotExistError:
+        return {
+            "status": "bad"
+        }
+
+    return {
+        "status": "ok"
+    }
+
+
+async def info_participants_in_tournament(tournament_name: str) -> list[Tournaments]:
+    async with session() as connect_db:
+        stmt = select(Tournaments).filter_by(tournament_name=tournament_name). \
+            options(selectinload(Tournaments.squads_list))
+        squads = await connect_db.scalars(stmt)
+
+    return list(squads)
+
+
+async def info_squads_with_tournaments(squad_name: str) -> list[Squads]:
+    async with session() as connect_db:
+        stmt = select(Squads).filter_by(squad_name=squad_name).options(selectinload(Squads.tournaments_list))
+        tournaments = await connect_db.scalars(stmt)
+    return list(tournaments)
