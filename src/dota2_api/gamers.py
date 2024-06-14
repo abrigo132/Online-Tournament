@@ -1,8 +1,9 @@
 import httpx
 
-from config import settings
-from httpx import AsyncClient
+
 from src.crud.crud import check_gamer_info
+
+
 
 """
 Подсказка по ранжированию в дота2
@@ -19,11 +20,15 @@ from src.crud.crud import check_gamer_info
 """
 
 
-async def get_info_gamer_wl(gamer_name: str):
-    dota_id = await check_gamer_info(gamer_name)
+async def get_info_gamer_wl(dota2_id: str) -> dict[str, str]:
+    """
+    API request for info player about win_lose, ranktier leaderboard, result last 5 matches
+
+    """
     async with httpx.AsyncClient() as connect:
-        url_win_lose = f"https://api.opendota.com/api/players/{dota_id.dota2_id}/wl"
-        url_info_player = f"https://api.opendota.com/api/players/{dota_id.dota2_id}"
+        url_win_lose = f"https://api.opendota.com/api/players/{dota2_id}/wl"
+        url_info_player = f"https://api.opendota.com/api/players/{dota2_id}"
+        url_info_last_matches = f"https://api.opendota.com/api/players/{dota2_id}/matches"
         result_win_lose = await connect.get(url=url_win_lose)
         result_info_player = await connect.get(url=url_info_player)
     return result_win_lose.json(), result_info_player.json()
