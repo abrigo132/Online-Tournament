@@ -25,6 +25,8 @@ class Squads(Base):
         secondary="tournamentssquads",
     )
 
+    gamers: Mapped[list["Gamers"]] = relationship(back_populates="squad")
+
 
 class Tournaments(Base):
     """
@@ -60,6 +62,8 @@ class Gamers(Base):
     age: Mapped[int]
     created_at: Mapped[created]
     squad_id: Mapped[int] = mapped_column(ForeignKey("squads.id"), nullable=True)
+
+    squad: Mapped["Squads"] = relationship(back_populates="gamers")
 
     repr_cols = ("status", "email", "dota2_id")
 
